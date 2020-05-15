@@ -21,19 +21,16 @@ public class DiagnosisKeysDirectoryImpl extends DirectoryImpl {
 
   private static final String DIAGNOSIS_KEYS_DIRECTORY = "diagnosis-keys";
   private final Collection<DiagnosisKey> diagnosisKeys;
-  private final CryptoProvider cryptoProvider;
 
-  public DiagnosisKeysDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys,
-      CryptoProvider cryptoProvider) {
+  public DiagnosisKeysDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys) {
     super(DIAGNOSIS_KEYS_DIRECTORY);
     this.diagnosisKeys = diagnosisKeys;
-    this.cryptoProvider = cryptoProvider;
   }
 
   @Override
   public void prepare(ImmutableStack<Object> indices) {
     this.addDirectory(decorateCountryDirectory(
-        new DiagnosisKeysCountryDirectoryImpl(diagnosisKeys, cryptoProvider)));
+        new DiagnosisKeysCountryDirectoryImpl(diagnosisKeys)));
     super.prepare(indices);
   }
 

@@ -55,7 +55,7 @@ public class SigningDecoratorTest {
     outputFolder.create();
     parent = new DirectoryImpl(outputFolder.newFolder());
     decoree = new FileImpl("bar", bytes);
-    decorator = new SigningDecorator(decoree, cryptoProvider);
+    decorator = new SigningDecorator(decoree);
 
     parent.addFile(decorator);
 

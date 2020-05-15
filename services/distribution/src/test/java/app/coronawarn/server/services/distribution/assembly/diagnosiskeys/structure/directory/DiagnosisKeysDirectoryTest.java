@@ -5,7 +5,6 @@ import static java.lang.String.join;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.coronawarn.server.common.persistence.domain.DiagnosisKey;
-import app.coronawarn.server.services.distribution.assembly.component.CryptoProvider;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.Directory;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.DirectoryImpl;
 import app.coronawarn.server.services.distribution.assembly.structure.util.ImmutableStack;
@@ -21,20 +20,9 @@ import java.util.stream.IntStream;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {CryptoProvider.class},
-    initializers = ConfigFileApplicationContextInitializer.class)
 public class DiagnosisKeysDirectoryTest {
-
-  @Autowired
-  CryptoProvider cryptoProvider;
 
   @Rule
   private TemporaryFolder outputFolder = new TemporaryFolder();
@@ -66,7 +54,7 @@ public class DiagnosisKeysDirectoryTest {
   @Test
   public void checkBuildsTheCorrectDirectoryStructureWhenNoKeys() {
     diagnosisKeys = new ArrayList<>();
-    Directory directory = new DiagnosisKeysDirectoryImpl(diagnosisKeys, cryptoProvider);
+    Directory directory = new DiagnosisKeysDirectoryImpl(diagnosisKeys);
     parentDirectory.addDirectory(directory);
     directory.prepare(new ImmutableStack<>());
     directory.write();
@@ -84,7 +72,7 @@ public class DiagnosisKeysDirectoryTest {
 
   @Test
   public void checkBuildsTheCorrectDirectoryStructure() {
-    Directory directory = new DiagnosisKeysDirectoryImpl(diagnosisKeys, cryptoProvider);
+    Directory directory = new DiagnosisKeysDirectoryImpl(diagnosisKeys);
     parentDirectory.addDirectory(directory);
     directory.prepare(new ImmutableStack<>());
     directory.write();

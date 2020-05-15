@@ -1,7 +1,6 @@
 package app.coronawarn.server.services.distribution.assembly.diagnosiskeys.structure.directory;
 
 import app.coronawarn.server.common.persistence.domain.DiagnosisKey;
-import app.coronawarn.server.services.distribution.assembly.component.CryptoProvider;
 import app.coronawarn.server.services.distribution.assembly.diagnosiskeys.util.DateTime;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.Directory;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.IndexDirectory;
@@ -19,12 +18,9 @@ public class DiagnosisKeysDateDirectoryImpl extends IndexDirectoryImpl<LocalDate
   private static final DateTimeFormatter ISO8601 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   private Collection<DiagnosisKey> diagnosisKeys;
-  private CryptoProvider cryptoProvider;
 
-  public DiagnosisKeysDateDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys,
-      CryptoProvider cryptoProvider) {
+  public DiagnosisKeysDateDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys) {
     super(DATE_DIRECTORY, __ -> DateTime.getDates(diagnosisKeys), ISO8601::format);
-    this.cryptoProvider = cryptoProvider;
     this.diagnosisKeys = diagnosisKeys;
   }
 
@@ -33,7 +29,7 @@ public class DiagnosisKeysDateDirectoryImpl extends IndexDirectoryImpl<LocalDate
     this.addDirectoryToAll(currentIndices -> {
       LocalDate currentDate = (LocalDate) currentIndices.peek();
       IndexDirectory<LocalDateTime> hourDirectory = new DiagnosisKeysHourDirectoryImpl(
-          diagnosisKeys, currentDate, cryptoProvider);
+          diagnosisKeys, currentDate);
       return decorateHourDirectory(hourDirectory);
     });
     super.prepare(indices);

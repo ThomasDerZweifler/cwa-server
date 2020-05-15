@@ -11,22 +11,26 @@ import java.security.Signature;
 import java.security.cert.Certificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * A {@link FileDecorator} that will convert the contents of its {@link File} into a {@link
  * app.coronawarn.server.common.protocols.internal.SignedPayload}.
  */
+@Component
 public class SigningDecorator extends FileDecorator {
+
+  @Autowired
+  private CryptoProvider cryptoProvider;
 
   private static final String SIGNATURE_ALGORITHM = "Ed25519";
   private static final String SECURITY_PROVIDER = "BC";
 
   private static final Logger logger = LoggerFactory.getLogger(SigningDecorator.class);
-  private final CryptoProvider cryptoProvider;
 
-  public SigningDecorator(File file, CryptoProvider cryptoProvider) {
+  public SigningDecorator(File file) {
     super(file);
-    this.cryptoProvider = cryptoProvider;
   }
 
   /**

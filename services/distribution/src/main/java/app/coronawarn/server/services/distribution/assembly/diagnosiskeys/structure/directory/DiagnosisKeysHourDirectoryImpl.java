@@ -1,7 +1,6 @@
 package app.coronawarn.server.services.distribution.assembly.diagnosiskeys.structure.directory;
 
 import app.coronawarn.server.common.persistence.domain.DiagnosisKey;
-import app.coronawarn.server.services.distribution.assembly.component.CryptoProvider;
 import app.coronawarn.server.services.distribution.assembly.diagnosiskeys.structure.file.HourFileImpl;
 import app.coronawarn.server.services.distribution.assembly.diagnosiskeys.util.DateTime;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.IndexDirectoryImpl;
@@ -18,16 +17,13 @@ public class DiagnosisKeysHourDirectoryImpl extends IndexDirectoryImpl<LocalDate
 
   private Collection<DiagnosisKey> diagnosisKeys;
   private LocalDate currentDate;
-  private CryptoProvider cryptoProvider;
 
   public DiagnosisKeysHourDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys,
-      LocalDate currentDate, CryptoProvider cryptoProvider) {
-    super(HOUR_DIRECTORY, indices -> {
-      return DateTime.getHours(((LocalDate) indices.peek()), diagnosisKeys);
-    }, LocalDateTime::getHour);
+      LocalDate currentDate) {
+    super(HOUR_DIRECTORY, indices -> DateTime.getHours(((LocalDate) indices.peek()), diagnosisKeys),
+        LocalDateTime::getHour);
     this.diagnosisKeys = diagnosisKeys;
     this.currentDate = currentDate;
-    this.cryptoProvider = cryptoProvider;
   }
 
   @Override
@@ -43,6 +39,6 @@ public class DiagnosisKeysHourDirectoryImpl extends IndexDirectoryImpl<LocalDate
   }
 
   private File decorateHourFile(File hourFile) {
-    return new SigningDecorator(hourFile, cryptoProvider);
+    return new SigningDecorator(hourFile);
   }
 }

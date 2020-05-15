@@ -2,7 +2,6 @@ package app.coronawarn.server.services.distribution.assembly.diagnosiskeys.struc
 
 import app.coronawarn.server.common.protocols.internal.FileBucket;
 import app.coronawarn.server.common.protocols.internal.SignedPayload;
-import app.coronawarn.server.services.distribution.assembly.component.CryptoProvider;
 import app.coronawarn.server.services.distribution.assembly.structure.Writable;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.Directory;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.decorator.DirectoryDecorator;
@@ -28,13 +27,10 @@ public class DateAggregatingDecorator extends DirectoryDecorator {
 
   private static final Logger logger = LoggerFactory.getLogger(DateAggregatingDecorator.class);
 
-  private final CryptoProvider cryptoProvider;
-
   private static final String AGGREGATE_FILE_NAME = "index";
 
-  public DateAggregatingDecorator(Directory directory, CryptoProvider cryptoProvider) {
+  public DateAggregatingDecorator(Directory directory) {
     super(directory);
-    this.cryptoProvider = cryptoProvider;
   }
 
   @Override
@@ -58,7 +54,7 @@ public class DateAggregatingDecorator extends DirectoryDecorator {
           .map(this::makeNewFileBucket)
           .map(FileBucket::toByteArray)
           .map(bytes -> new FileImpl(AGGREGATE_FILE_NAME, bytes))
-          .map(file -> new SigningDecorator(file, cryptoProvider))
+          .map(SigningDecorator::new)
           .peek(currentDirectory::addFile)
           .forEach(aggregate -> aggregate.prepare(indices));
     });

@@ -22,12 +22,9 @@ public class DiagnosisKeysComponent {
   @Autowired
   private DiagnosisKeyRepository diagnosisKeyRepository;
 
-  @Autowired
-  private CryptoProvider cryptoProvider;
-
   public Directory getDiagnosisKeys() {
     Collection<DiagnosisKey> diagnosisKeys = readDiagnosisKeys();
-    return new DiagnosisKeysDirectoryImpl(diagnosisKeys, cryptoProvider);
+    return new DiagnosisKeysDirectoryImpl(diagnosisKeys);
   }
 
   private Collection<DiagnosisKey> readDiagnosisKeys() {

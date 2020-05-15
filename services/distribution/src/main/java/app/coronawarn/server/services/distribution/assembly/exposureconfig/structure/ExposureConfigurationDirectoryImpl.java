@@ -1,7 +1,6 @@
 package app.coronawarn.server.services.distribution.assembly.exposureconfig.structure;
 
 import app.coronawarn.server.common.protocols.internal.RiskScoreParameters;
-import app.coronawarn.server.services.distribution.assembly.component.CryptoProvider;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.DirectoryImpl;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.IndexDirectoryImpl;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.decorator.IndexingDecorator;
@@ -25,19 +24,16 @@ public class ExposureConfigurationDirectoryImpl extends DirectoryImpl {
    *
    * @param region         The region that the {@link RiskScoreParameters} apply to.
    * @param exposureConfig The {@link RiskScoreParameters} to sign and write.
-   * @param cryptoProvider The {@link CryptoProvider} whose artifacts to use for creating the {@link
-   *                       app.coronawarn.server.common.protocols.internal.SignedPayload}.
    */
   public ExposureConfigurationDirectoryImpl(
-      String region, RiskScoreParameters exposureConfig, CryptoProvider cryptoProvider) {
+      String region, RiskScoreParameters exposureConfig) {
     super(PARAMETERS_DIRECTORY);
 
     IndexDirectoryImpl<String> country =
         new IndexDirectoryImpl<>(COUNTRY_DIRECTORY, __ -> Set.of(region), Object::toString);
 
     country.addFileToAll(__ ->
-        new SigningDecorator(new FileImpl(INDEX_FILE_NAME, exposureConfig.toByteArray()),
-            cryptoProvider));
+        new SigningDecorator(new FileImpl(INDEX_FILE_NAME, exposureConfig.toByteArray())));
 
     this.addDirectory(new IndexingDecorator<>(country));
   }

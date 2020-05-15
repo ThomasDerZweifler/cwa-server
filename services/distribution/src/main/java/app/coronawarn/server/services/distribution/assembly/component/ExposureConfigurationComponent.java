@@ -7,7 +7,6 @@ import app.coronawarn.server.services.distribution.assembly.exposureconfig.struc
 import app.coronawarn.server.services.distribution.assembly.structure.directory.Directory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,14 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExposureConfigurationComponent {
 
-  private static final Logger logger = LoggerFactory.getLogger(ExposureConfigurationComponent.class);
-
-  @Autowired
-  private CryptoProvider cryptoProvider;
+  private static final Logger logger = LoggerFactory
+      .getLogger(ExposureConfigurationComponent.class);
 
   public Directory getExposureConfiguration() {
     var riskScoreParameters = readExposureConfiguration();
-    return new ExposureConfigurationDirectoryImpl(riskScoreParameters, cryptoProvider);
+    return new ExposureConfigurationDirectoryImpl(riskScoreParameters);
   }
 
   private RiskScoreParameters readExposureConfiguration() {

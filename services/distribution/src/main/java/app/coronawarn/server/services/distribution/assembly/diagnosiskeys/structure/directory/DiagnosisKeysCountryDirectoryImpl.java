@@ -1,7 +1,6 @@
 package app.coronawarn.server.services.distribution.assembly.diagnosiskeys.structure.directory;
 
 import app.coronawarn.server.common.persistence.domain.DiagnosisKey;
-import app.coronawarn.server.services.distribution.assembly.component.CryptoProvider;
 import app.coronawarn.server.services.distribution.assembly.diagnosiskeys.structure.directory.decorator.DateAggregatingDecorator;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.Directory;
 import app.coronawarn.server.services.distribution.assembly.structure.directory.IndexDirectory;
@@ -18,26 +17,22 @@ public class DiagnosisKeysCountryDirectoryImpl extends IndexDirectoryImpl<String
   private static final String COUNTRY = "DE";
 
   private Collection<DiagnosisKey> diagnosisKeys;
-  private CryptoProvider cryptoProvider;
 
-  public DiagnosisKeysCountryDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys,
-      CryptoProvider cryptoProvider) {
+  public DiagnosisKeysCountryDirectoryImpl(Collection<DiagnosisKey> diagnosisKeys) {
     super(COUNTRY_DIRECTORY, __ -> Set.of(COUNTRY), Object::toString);
     this.diagnosisKeys = diagnosisKeys;
-    this.cryptoProvider = cryptoProvider;
   }
 
   @Override
   public void prepare(ImmutableStack<Object> indices) {
     this.addDirectoryToAll(__ -> {
-      IndexDirectory<LocalDate> dateDirectory = new DiagnosisKeysDateDirectoryImpl(diagnosisKeys,
-          cryptoProvider);
+      IndexDirectory<LocalDate> dateDirectory = new DiagnosisKeysDateDirectoryImpl(diagnosisKeys);
       return decorateDateDirectory(dateDirectory);
     });
     super.prepare(indices);
   }
 
   private Directory decorateDateDirectory(IndexDirectory<LocalDate> dateDirectory) {
-    return new DateAggregatingDecorator(new IndexingDecorator<>(dateDirectory), cryptoProvider);
+    return new DateAggregatingDecorator(new IndexingDecorator<>(dateDirectory));
   }
 }
