@@ -21,6 +21,7 @@ package app.coronawarn.server.common.persistence.service;
 
 import static java.time.ZoneOffset.UTC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import app.coronawarn.server.common.persistence.domain.DiagnosisKey;
 import app.coronawarn.server.common.persistence.repository.DiagnosisKeyRepository;
@@ -28,6 +29,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.validation.ConstraintViolationException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -104,6 +106,24 @@ public class DiagnosisKeyServiceTest {
     diagnosisKeyService.saveDiagnosisKeys(keys);
     diagnosisKeyService.applyRetentionPolicy(1);
     var actKeys = diagnosisKeyService.getDiagnosisKeys();
+
+    assertDiagnosisKeysEqual(Lists.emptyList(), actKeys);
+  }
+
+  @Test
+  void testNoPersistOnValidationError() {
+    assertThrows(ConstraintViolationException.class, () -> {
+      var keys = List.of(DiagnosisKey.builder()
+          .withKeyData(new byte[16])
+          .withRollingStartNumber(OffsetDateTime.now(UTC).toEpochSecond() / 600L)
+          .withRollingPeriod(1L)
+          .withTransmissionRiskLevel(2)
+          .withSubmissionTimestamp(0L).build());
+
+      diagnosisKeyService.saveDiagnosisKeys(keys);
+    });
+
+    List<DiagnosisKey> actKeys = diagnosisKeyService.getDiagnosisKeys();
 
     assertDiagnosisKeysEqual(Lists.emptyList(), actKeys);
   }

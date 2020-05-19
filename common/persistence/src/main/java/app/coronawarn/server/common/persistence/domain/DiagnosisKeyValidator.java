@@ -53,11 +53,13 @@ public class DiagnosisKeyValidator {
    *
    * @param diagnosisKey the diagnosis key to be validated.
    */
-  public static void validateDiagnosisKey(DiagnosisKey diagnosisKey) {
+  public static boolean isValidDiagnosisKey(DiagnosisKey diagnosisKey) {
     validateKeyData(diagnosisKey.getKeyData());
     validateRollingPeriod(diagnosisKey.getRollingPeriod());
     validateRollingStartNumber(diagnosisKey.getRollingStartNumber());
     validateTransmissionRiskLevel(diagnosisKey.getTransmissionRiskLevel());
+    // TODO check if implementation obsolete
+    return true;
   }
 
   /**

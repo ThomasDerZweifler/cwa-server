@@ -25,8 +25,15 @@ import static app.coronawarn.server.common.persistence.domain.DiagnosisKeyBuilde
 import static app.coronawarn.server.common.persistence.domain.DiagnosisKeyBuilders.RollingStartNumberBuilder;
 import static app.coronawarn.server.common.persistence.domain.DiagnosisKeyBuilders.TransmissionRiskLevelBuilder;
 
+import app.coronawarn.server.common.persistence.exception.InvalidDiagnosisKeyException;
 import app.coronawarn.server.common.protocols.external.exposurenotification.Key;
 import java.time.Instant;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  * An instance of this builder can be retrieved by calling {@link DiagnosisKey#builder()}. A {@link DiagnosisKey} can
@@ -90,7 +97,17 @@ public class DiagnosisKeyBuilder implements Builder, RollingStartNumberBuilder,
       submissionTimestamp = Instant.now().getEpochSecond() / 3600L;
     }
 
-    return new DiagnosisKey(this.keyData, this.rollingStartNumber, this.rollingPeriod,
+    var diagKey =  new DiagnosisKey(this.keyData, this.rollingStartNumber, this.rollingPeriod,
         this.transmissionRiskLevel, submissionTimestamp);
+    // TODO schick
+    // TODO remove throws blabla Exception
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    Validator validator = factory.getValidator();
+    Set<ConstraintViolation<DiagnosisKey>> violations = validator.validate(diagKey);
+
+    if (!violations.isEmpty()) {
+      throw new ConstraintViolationException(violations);
+    }
+    return diagKey;
   }
 }
