@@ -22,6 +22,7 @@ package app.coronawarn.server.common.persistence.domain;
 import static java.time.ZoneOffset.UTC;
 
 import app.coronawarn.server.common.persistence.domain.DiagnosisKeyBuilders.Builder;
+import app.coronawarn.server.common.persistence.domain.validation.ValidRollingStartNumber;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -31,6 +32,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.Range;
 
 /**
  * A key generated for advertising over a window of time.
@@ -42,10 +46,19 @@ public class DiagnosisKey {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Size(min = 16, max = 16, message = "Key data must be byte array of length 16")
   private byte[] keyData;
+
+  @ValidRollingStartNumber
   private long rollingStartNumber;
+
+  @Min(value = 1L, message = "Rolling period must be greater than 0.")
   private long rollingPeriod;
+
+  @Range(min = 0, max = 8, message = "Risk level must be between 0 and 8.")
   private int transmissionRiskLevel;
+
   private long submissionTimestamp;
 
   protected DiagnosisKey() {

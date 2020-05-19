@@ -46,28 +46,24 @@ public class DiagnosisKeyBuilder implements Builder, RollingStartNumberBuilder,
 
   @Override
   public RollingStartNumberBuilder withKeyData(byte[] keyData) {
-    DiagnosisKeyValidator.validateKeyData(keyData);
     this.keyData = keyData;
     return this;
   }
 
   @Override
   public RollingPeriodBuilder withRollingStartNumber(long rollingStartNumber) {
-    DiagnosisKeyValidator.validateRollingStartNumber(rollingStartNumber);
     this.rollingStartNumber = rollingStartNumber;
     return this;
   }
 
   @Override
   public TransmissionRiskLevelBuilder withRollingPeriod(long rollingPeriod) {
-    DiagnosisKeyValidator.validateRollingPeriod(rollingPeriod);
     this.rollingPeriod = rollingPeriod;
     return this;
   }
 
   @Override
   public FinalBuilder withTransmissionRiskLevel(int transmissionRiskLevel) {
-    DiagnosisKeyValidator.validateTransmissionRiskLevel(transmissionRiskLevel);
     this.transmissionRiskLevel = transmissionRiskLevel;
     return this;
   }
